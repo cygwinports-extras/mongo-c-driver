@@ -1,0 +1,29 @@
+--- origsrc/mongo-c-driver-1.13.1/build/cmake/FindResSearch.cmake	2018-09-11 15:41:35.000000000 -0500
++++ src/mongo-c-driver-1.13.1/build/cmake/FindResSearch.cmake	2019-01-25 03:08:21.244140600 -0600
+@@ -1,8 +1,8 @@
+ include (CheckSymbolExists)
+ 
+ if (ENABLE_SRV STREQUAL ON OR ENABLE_SRV STREQUAL AUTO)
+-   if (WIN32)
+-      set (RESOLV_LIBRARIES Dnsapi)
++   if (WIN32 OR CYGWIN)
++      set (RESOLV_LIBRARIES dnsapi)
+       set (MONGOC_HAVE_DNSAPI 1)
+       set (MONGOC_HAVE_RES_NSEARCH 0)
+       set (MONGOC_HAVE_RES_NDESTROY 0)
+--- origsrc/mongo-c-driver-1.13.1/src/libmongoc/src/mongoc/mongoc-client.c	2019-01-24 09:09:53.000000000 -0600
++++ src/mongo-c-driver-1.13.1/src/libmongoc/src/mongoc/mongoc-client.c	2019-01-25 03:06:28.783203100 -0600
+@@ -19,9 +19,11 @@
+ #include "mongoc/mongoc-config.h"
+ #ifdef MONGOC_HAVE_DNSAPI
+ /* for DnsQuery_UTF8 */
+-#include <Windows.h>
+-#include <WinDNS.h>
++#include <windows.h>
++#include <windns.h>
++#ifndef __CYGWIN__
+ #include <ws2tcpip.h>
++#endif
+ #else
+ #if defined(MONGOC_HAVE_RES_NSEARCH) || defined(MONGOC_HAVE_RES_SEARCH)
+ #include <netdb.h>

@@ -1,0 +1,59 @@
+inherit cmake
+
+NAME="mongo-c-driver"
+VERSION=1.13.1
+RELEASE=1
+CATEGORY="Libs"
+SUMMARY="MongoDB client C library"
+DESCRIPTION="The MongoDB C Driver is the official client library for C
+applications, and provides a base for MongoDB drivers in higher-level
+languages."
+HOMEPAGE="http://mongoc.org/"
+SRC_URI="https://github.com/mongodb/mongo-c-driver/releases/download/${VERSION}/mongo-c-driver-${VERSION}.tar.gz"
+PATCH_URI="
+	1.13.1-cygwin-dll.patch
+	1.13.1-cygwin-dnsapi.patch
+	1.13.1-cygwin-nprocs.patch
+"
+
+PKG_NAMES="libbson1.0_0 libbson1.0-devel libmongoc1.0_0 libmongoc1.0-devel ${NAME}-doc"
+libbson1_0_0_CONTENTS="usr/bin/cygbson-1.0-0.dll"
+libbson1_0_devel_CONTENTS="
+	usr/include/libbson-1.0/
+	usr/lib/cmake/libbson-1.0/
+	usr/lib/libbson-1.0.dll.a
+	usr/lib/pkgconfig/libbson-1.0.pc
+"
+libmongoc1_0_0_CONTENTS="usr/bin/cygmongoc-1.0-0.dll"
+libmongoc1_0_devel_CONTENTS="
+	usr/include/libmongoc-1.0/
+	usr/lib/cmake/libmongoc-1.0/
+	usr/lib/libmongoc-1.0.dll.a
+	usr/lib/pkgconfig/libmongoc-1.0.pc
+	usr/lib/pkgconfig/libmongoc-ssl-1.0.pc
+"
+mongo_c_driver_doc_CONTENTS="
+	usr/share/doc/${NAME}/
+	usr/share/man/man3/
+"
+
+# ENABLE_SHM_COUNTERS: only useful with a local Cygwin-built server
+# ENABLE_ICU: requires cmake 3.7
+CYGCMAKE_ARGS="
+	-DENABLE_SSL=OPENSSL
+	-DENABLE_SASL=CYRUS
+	-DENABLE_STATIC=OFF
+	-DENABLE_TESTS=OFF
+	-DENABLE_EXAMPLES=OFF
+	-DENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF
+	-DENABLE_CRYPTO_SYSTEM_PROFILE=OFF
+	-DENABLE_SHM_COUNTERS=OFF
+	-DENABLE_MONGOC=ON
+	-DENABLE_BSON=ON
+	-DENABLE_SNAPPY=ON
+	-DENABLE_ZLIB=SYSTEM
+	-DENABLE_MAN_PAGES=ON
+	-DENABLE_HTML_DOCS=ON
+	-DENABLE_ICU=OFF
+	-DENABLE_UNINSTALL=OFF
+"

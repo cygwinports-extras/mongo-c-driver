@@ -1,0 +1,20 @@
+--- origsrc/mongo-c-driver-1.13.1/src/libmongoc/src/mongoc/mongoc-counters-private.h	2019-01-24 09:09:53.000000000 -0600
++++ src/mongo-c-driver-1.13.1/src/libmongoc/src/mongoc/mongoc-counters-private.h	2019-01-25 02:12:58.106445300 -0600
+@@ -24,7 +24,7 @@
+ #include <mongoc/mongoc.h>
+ #include <bson/bson.h>
+ 
+-#ifdef __linux__
++#if defined(__linux__) || defined(__CYGWIN__)
+ #include <sched.h>
+ #include <sys/sysinfo.h>
+ #elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || \
+@@ -49,7 +49,7 @@ _mongoc_counters_cleanup (void);
+ static BSON_INLINE unsigned
+ _mongoc_get_cpu_count (void)
+ {
+-#if defined(__linux__)
++#if defined(__linux__) || defined(__CYGWIN__)
+    return get_nprocs ();
+ #elif defined(__hpux__)
+    struct pst_dynamic psd;
